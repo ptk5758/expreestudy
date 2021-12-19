@@ -16,7 +16,7 @@ app.get("/", (req,res) => { //Root 경로
     var data = {msg: "Root"};
     res.send(data);
 });
-
+// GET LIST
 app.get("/attend", (req,res) => { //모든리스트
     res.type('application/json');
     conn.connect();
@@ -27,6 +27,7 @@ app.get("/attend", (req,res) => { //모든리스트
     conn.end();
 });
 
+// POST
 app.post("/attend", (req,res)=> { //회원가입하는 API
     res.set({'Content-Type':'application/json; charset=utf-8'});    
 
@@ -47,7 +48,7 @@ app.post("/attend", (req,res)=> { //회원가입하는 API
         res.send(data);
     });    
 });
-
+// GET Own
 app.get("/attend/:id", (req,res)=>{ //하나의 회원정보를 가져오는 API
     let id = req.params.id;
     let data = {};
@@ -59,6 +60,7 @@ app.get("/attend/:id", (req,res)=>{ //하나의 회원정보를 가져오는 API
     
 });
 
+// PUT
 app.put("/attend/:id",(req, res) => {
     let id = req.params.id;
     let data = {};
@@ -68,13 +70,29 @@ app.put("/attend/:id",(req, res) => {
     let level = req.body.level;
     let sql = `UPDATE user SET pass='${pass}', name='${name}', level=${level} WHERE id='${id}'`;
     
-    conn.query(sql, (err, rows, field)=>{        
-        console.log(rows);        
+    conn.query(sql, (err, rows, field)=>{
         res.send(data);
     });
     
 });
 
+// DELETE
+
+app.delete("/attend/:id", (req,res)=>{    
+    let id = req.params.id;    
+    console.log(`${id} Deleteing..`);
+    
+    let query = `DELETE FROM user WHERE id = '${id}'`;
+    let data = {};        
+    data['msg'] = "Riffnffod";
+    conn.query(query,(err, rows)=>{
+        if(err) {
+            throw err;            
+        }
+
+        data['data'] = rows;
+        res.send(data);
+    });    
+});
 
 app.listen(5000, () => {console.log("5000번포트로 서버활성화");});
-
