@@ -11,13 +11,13 @@ const conn = mysql.createConnection({     //데이터베이스 연결 객체
 app.use(express.json()); //body-parser 의역할? json request 받을때 필요함
 conn.connect(); // 데이터베이스 커넥션
 
-app.get("/", (req,res) => {
+app.get("/", (req,res) => { //Root 경로
     res.type('application/json');
     var data = {msg: "Root"};
     res.send(data);
 });
 
-app.get("/attend", (req,res) => {
+app.get("/attend", (req,res) => { //모든리스트
     res.type('application/json');
     conn.connect();
     conn.query("select * from attend" , (err,rows,fields) => {          
@@ -27,7 +27,7 @@ app.get("/attend", (req,res) => {
     conn.end();
 });
 
-app.post("/attend", (req,res)=> {
+app.post("/attend", (req,res)=> { //회원가입하는 API
     res.set({'Content-Type':'application/json; charset=utf-8'});    
 
     let data = {};
@@ -48,7 +48,7 @@ app.post("/attend", (req,res)=> {
     });    
 });
 
-app.get("/attend/:id", (req,res)=>{
+app.get("/attend/:id", (req,res)=>{ //하나의 회원정보를 가져오는 API
     let id = req.params.id;
     let data = {};
     data['msg'] = "Good";
@@ -59,4 +59,22 @@ app.get("/attend/:id", (req,res)=>{
     
 });
 
+app.put("/attend/:id",(req, res) => {
+    let id = req.params.id;
+    let data = {};
+    data['msg'] = `${id} 님의 회원수정이 완료되었다`;
+    let pass = req.body.pass;
+    let name = req.body.name;
+    let level = req.body.level;
+    let sql = `UPDATE user SET pass='${pass}', name='${name}', level=${level} WHERE id='${id}'`;
+    
+    conn.query(sql, (err, rows, field)=>{        
+        console.log(rows);        
+        res.send(data);
+    });
+    
+});
+
+
 app.listen(5000, () => {console.log("5000번포트로 서버활성화");});
+
